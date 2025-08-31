@@ -6,3 +6,4 @@ gotrue==2.4.2
 postgrest==0.13.0
 storage3==0.6.0
 realtime==1.0.2
+flask-cors==4.0.0
