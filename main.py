@@ -1,11 +1,16 @@
+import os
 from flask import Flask, render_template_string
 from supabase import create_client, Client
 
 # ==========================
-# Config Supabase
+# Config Supabase (dùng biến môi trường để bảo mật)
 # ==========================
-url = "https://upzxozuvjsbqtodrvmzm.supabase.co"
-key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwenhvenV2anNicXRvZHJ2bXptIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NjY1OTM0NywiZXhwIjoyMDcyMjM1MzQ3fQ.mfBZ00kmAoxoq1Ym46BavxtwUzuRg02AwXW2Bskg1mk"
+url = os.environ.get("SUPABASE_URL")
+key = os.environ.get("SUPABASE_KEY")
+
+if not url or not key:
+    raise ValueError("SUPABASE_URL và SUPABASE_KEY chưa được cấu hình trong biến môi trường")
+
 supabase: Client = create_client(url, key)
 
 # ==========================
@@ -15,10 +20,15 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    # Lấy dữ liệu từ bảng aunhi2
-    response = supabase.table("aunhi2").select("*").execute()
-    rows = response.data
-    
+    try:
+        response = supabase.table("aunhi2").select("*").execute()
+        rows = response.data or []
+    except Exception as e:
+        return f"<h3>Lỗi khi lấy dữ liệu từ Supabase: {e}</h3>"
+
+    if not rows:
+        return "<h3>Không có dữ liệu trong bảng aunhi2</h3>"
+
     # HTML template đơn giản
     html = """
     <h2>Danh sách dữ liệu từ bảng aunhi2</h2>
@@ -39,5 +49,7 @@ def index():
     """
     return render_template_string(html, rows=rows)
 
+
+# Chạy local (Render sẽ bỏ qua đoạn này, dùng gunicorn)
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=5000)
