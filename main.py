@@ -32,6 +32,18 @@ def index():
         return jsonify({"error": str(e)}), 500
 
 
+<<<<<<< HEAD
+=======
+@app.route("/", methods=["POST"])
+def insert_data():
+    try:
+        new_data = {"name": "New Entry"}  # Thay đổi theo cấu trúc bảng của bạn
+        response = supabase.table("aunhi2").insert(new_data).execute()
+        return jsonify(response.data), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+>>>>>>> da9d84e (First commit: thêm Flask backend + React frontend)
 # Chạy local
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
