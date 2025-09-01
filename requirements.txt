@@ -7,3 +7,5 @@ postgrest==0.13.0
 storage3==0.6.0
 realtime==1.0.2
 flask-cors==4.0.0
+qrcode[pil]==7.4.2
+Pillow==10.4.0
