@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from supabase import create_client, Client
 
@@ -34,7 +34,12 @@ def index():
 @app.route("/", methods=["POST"])
 def insert_data():
     try:
-        new_data = {"name": "New Entry"}  # Thay đổi theo cấu trúc bảng của bạn
+        # Lấy dữ liệu JSON từ request body
+        new_data = request.get_json()
+
+        if not new_data or "name" not in new_data:
+            return jsonify({"error": "Thiếu field 'name'"}), 400
+
         response = supabase.table("aunhi2").insert(new_data).execute()
         return jsonify(response.data), 201
     except Exception as e:
