@@ -22,7 +22,7 @@ CORS(app)  # Cho phép tất cả domain truy cập
 # Nếu muốn giới hạn chỉ frontend Cloudflare, dùng:
 # CORS(app, resources={r"/*": {"origins": "https://your-frontend.pages.dev"}})
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def index():
     try:
         response = supabase.table("aunhi2").select("*").execute()
@@ -31,12 +31,6 @@ def index():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> master
 @app.route("/", methods=["POST"])
 def insert_data():
     try:
@@ -46,10 +40,6 @@ def insert_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-<<<<<<< HEAD
->>>>>>> da9d84e (First commit: thêm Flask backend + React frontend)
-=======
->>>>>>> master
 # Chạy local
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
