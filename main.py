@@ -61,7 +61,7 @@ def insert_data():
 
         return jsonify({
             "data": row,
-            "qr_code": f"data:image/png;base64,{qr_base64}"
+            "qr_code_img": f"data:image/png;base64,{qr_base64}"
         }), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
