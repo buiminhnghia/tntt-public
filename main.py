@@ -1,5 +1,8 @@
 import os
-from flask import Flask, jsonify, request
+import io
+import qrcode
+import base64
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
 from supabase import create_client, Client
 
@@ -34,17 +37,34 @@ def index():
 @app.route("/", methods=["POST"])
 def insert_data():
     try:
-        # Lấy dữ liệu JSON từ request body
         new_data = request.get_json()
-
         if not new_data or "name" not in new_data:
             return jsonify({"error": "Thiếu field 'name'"}), 400
 
+        # Insert vào Supabase
         response = supabase.table("aunhi2").insert(new_data).execute()
-        return jsonify(response.data), 201
+        row = response.data[0]  # bản ghi vừa insert
+        record_id = row.get("id")
+        record_name = row.get("name")
+
+        # Nội dung muốn encode vào QR
+        qr_content = f"ID:{record_id}, NAME:{record_name}"
+
+        # Tạo QR code
+        qr = qrcode.make(qr_content)
+        buf = io.BytesIO()
+        qr.save(buf, format="PNG")
+        buf.seek(0)
+
+        # Trả về QR dưới dạng base64 (frontend có thể hiển thị trực tiếp)
+        qr_base64 = base64.b64encode(buf.getvalue()).decode("utf-8")
+
+        return jsonify({
+            "data": row,
+            "qr_code": f"data:image/png;base64,{qr_base64}"
+        }), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 # Chạy local
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
