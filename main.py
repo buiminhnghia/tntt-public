@@ -44,6 +44,7 @@ def insert_data():
         record_name = new_data["name"]
         date = new_data["date"]
         telephone = new_data["telephone"]
+        manager_name = new_data.get("manager_name", "")
         # Tạo QR content
         qr_content = f"name:{record_name};date:{date};telephone:{telephone}"
         qr = qrcode.make(qr_content)
