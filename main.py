@@ -42,9 +42,10 @@ def insert_data():
             return jsonify({"error": "Thiếu field 'name'"}), 400
 
         record_name = new_data["name"]
-
+        date = new_data["date"]
+        telephone = new_data["telephone"]
         # Tạo QR content
-        qr_content = f"NAME:{record_name}"
+        qr_content = f"name:{record_name};date:{date};telephone:{telephone}"
         qr = qrcode.make(qr_content)
         buf = io.BytesIO()
         qr.save(buf, format="PNG")
@@ -56,6 +57,8 @@ def insert_data():
         # Insert trực tiếp name + qr_code_img
         response = supabase.table("aunhi2").insert({
             "name": record_name,
+            "date":date,
+            "telephone":telephone,
             "qr_code_img": qr_data_url
         }).execute()
 
