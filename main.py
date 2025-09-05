@@ -46,7 +46,7 @@ def insert_data():
         telephone = new_data["telephone"]
         manager_name = new_data.get("manager_name", "")
         # Tạo QR content
-        qr_content = f"name:{record_name};date:{date};telephone:{telephone}"
+        qr_content = f"name:{record_name};date:{date};telephone:{telephone};manager_name:{manager_name}"
         qr = qrcode.make(qr_content)
         buf = io.BytesIO()
         qr.save(buf, format="PNG")
@@ -60,6 +60,7 @@ def insert_data():
             "name": record_name,
             "date":date,
             "telephone":telephone,
+            "manager_name": manager_name,
             "qr_code_img": qr_data_url
         }).execute()
 
