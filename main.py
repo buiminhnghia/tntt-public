@@ -70,7 +70,7 @@ def insert_data():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route("/", methods=["POST"])
+@app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
     username = data.get("username", "").strip()
