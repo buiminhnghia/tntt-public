@@ -76,11 +76,15 @@ def login():
     username = data.get("Username")
     password = data.get("Password")
 
-    if username == "admin" and password == "password":
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
+    user = cur.fetchone()
+    cur.close()
+
+    if user:
         return jsonify({"message": "Login successful"}), 200
     else:
         return jsonify({"message": "Invalid credentials"}), 401
-    
     
 # Chạy local
 if __name__ == "__main__":
