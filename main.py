@@ -73,11 +73,12 @@ def insert_data():
 @app.route("/", methods=["POST"])
 def login():
     data = request.get_json()
-    username = data.get("Username")
-    password = data.get("Password")
+    username = data.get("username")
+    password = data.get("password")
 
     cur = conn.cursor()
-    cur.execute('SELECT * FROM "Users" WHERE "Username"=%s AND "Password"=%s', (username, password))
+    cur.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
+
     user = cur.fetchone()
     cur.close()
 
