@@ -73,12 +73,11 @@ def insert_data():
 @app.route("/", methods=["POST"])
 def login():
     data = request.get_json()
-    username = data.get("username")
-    password = data.get("password")
+    username = data.get("username")   # chữ thường
+    password = data.get("password")   # chữ thường
 
     cur = conn.cursor()
     cur.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
-
     user = cur.fetchone()
     cur.close()
 
@@ -86,7 +85,7 @@ def login():
         return jsonify({"message": "Login successful"}), 200
     else:
         return jsonify({"message": "Invalid credentials"}), 401
-    
+
 # Chạy local
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
