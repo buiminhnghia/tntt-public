@@ -72,36 +72,32 @@ def insert_data():
 
 @app.route("/login", methods=["POST"])
 def login():
-    data = request.get_json()
-    username = data.get("username", "").strip()
-    password = data.get("password", "").strip()
+    try:
+        data = request.get_json()
+        username = data.get("username", "").strip()
+        password = data.get("password", "").strip()
 
-    print(">>> Nhận từ client:", username, password)
+        print(">>> Nhận từ client:", username, password)
 
-    cur = conn.cursor()
-    cur.execute("SELECT id, username, password FROM users WHERE username=%s AND password=%s", (username, password))
-    user = cur.fetchone()
-    cur.close()
+        # Check trong bảng users
+        response = (
+            supabase.table("users")
+            .select("*")
+            .eq("username", username)
+            .eq("password", password)
+            .execute()
+        )
 
-    print(">>> Kết quả query:", user)
+        user = response.data
+        print(">>> Kết quả query:", user)
 
-    if user:
-        return jsonify({"message": "Login successful"}), 200
-    else:
-        return jsonify({"message": "Invalid credentials"}), 401
-    data = request.get_json()
-    username = data.get("username")   # chữ thường
-    password = data.get("password")   # chữ thường
+        if user:
+            return jsonify({"message": "Login successful"}), 200
+        else:
+            return jsonify({"message": "Invalid credentials"}), 401
 
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
-    user = cur.fetchone()
-    cur.close()
-
-    if user:
-        return jsonify({"message": "Login successful"}), 200
-    else:
-        return jsonify({"message": "Invalid credentials"}), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # Chạy local
 if __name__ == "__main__":
