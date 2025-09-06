@@ -73,6 +73,23 @@ def insert_data():
 @app.route("/", methods=["POST"])
 def login():
     data = request.get_json()
+    username = data.get("username", "").strip()
+    password = data.get("password", "").strip()
+
+    print(">>> Nhận từ client:", username, password)
+
+    cur = conn.cursor()
+    cur.execute("SELECT id, username, password FROM users WHERE username=%s AND password=%s", (username, password))
+    user = cur.fetchone()
+    cur.close()
+
+    print(">>> Kết quả query:", user)
+
+    if user:
+        return jsonify({"message": "Login successful"}), 200
+    else:
+        return jsonify({"message": "Invalid credentials"}), 401
+    data = request.get_json()
     username = data.get("username")   # chữ thường
     password = data.get("password")   # chữ thường
 
