@@ -77,7 +77,7 @@ def login():
     password = data.get("Password")
 
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Users WHERE Username=%s AND Password=%s", (username, password))
+    cur.execute('SELECT * FROM "Users" WHERE "Username"=%s AND "Password"=%s', (username, password))
     user = cur.fetchone()
     cur.close()
 
